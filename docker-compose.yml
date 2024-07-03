@@ -1,0 +1,37 @@
+services:
+  wordpress:
+    image: magenteiro-wpcurso:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    ports:
+        - "80:80"
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./Docker/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    ports:
+      - "443:443"
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db:/var/lib/mysql
+      
+volumes:
+  db:
